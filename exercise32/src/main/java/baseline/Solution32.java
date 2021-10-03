@@ -5,23 +5,24 @@
 
 package baseline;
 
-import java.util.Random;
+import java.security.SecureRandom;
 import java.util.Scanner;
 
 public class Solution32 {
     static Scanner input = new Scanner(System.in);
 
     public static void main(String[] args) {
+        SecureRandom random = new SecureRandom(); // only create once
+
         System.out.print("Let's play Guess the Number!\n\n");
-        gameLoop();
+        gameLoop(random); // Main loop
     }
 
-    public static void gameLoop() {
-        int randInt = randomInt(1, getDificulty());
-        int guessedNumber = -1;
+    public static void gameLoop(SecureRandom random) {
+        int randInt = randomInt(random,1, getDifficulty());
         int guesses = 1;
 
-        guessedNumber = getIntInput("I have my numnber. What's your guess? ");
+        int guessedNumber = getIntInput("I have my number. What's your guess? ");
         while (guessedNumber != randInt) {
             String hint = "Too low. ";
             if (guessedNumber > randInt)
@@ -33,20 +34,23 @@ public class Solution32 {
         }
 
         System.out.printf("You got it in %d guesses!%n%n", guesses);
+
+        // End game unless user wants to play again
         if (getBoolInput("Do you wish to play again? (Y/N)? "))
-            gameLoop();
+            gameLoop(random);
     }
 
-    public static int randomInt(int min, int max) {
-        Random random = new Random();
+    public static int randomInt(SecureRandom random, int min, int max) {
         return random.nextInt(max - min + 1) + min;
     }
 
-    public static int getDificulty() {
+    // Get the difficulty for the game
+    public static int getDifficulty() {
         int difficulty = getIntInput("Enter the difficulty level (1, 2, or 3): ");
         return (int)Math.pow(10, difficulty);
     }
 
+    // Get boolean input using Y or N
     public static boolean getBoolInput(String message) {
         System.out.print(message);
         return validateBoolInput(input.nextLine(), message);
@@ -63,6 +67,7 @@ public class Solution32 {
         return validateBoolInput(in, message);
     }
 
+    // Get integer input
     public static int getIntInput(String message) {
         System.out.print(message);
         return validateIntInput(input.nextLine(), message);
